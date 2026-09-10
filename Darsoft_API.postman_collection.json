@@ -1,0 +1,403 @@
+{
+  "info": {
+    "_postman_id": "darsoft-task1-api-collection",
+    "name": "Darsoft Backend Technical Assessment API",
+    "description": "Comprehensive Postman collection for Darsoft Technical Assessment — User Management, Address Management, and Real-Time News (Bonus).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "user_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "newsId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "addressId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. User Management & Auth",
+      "item": [
+        {
+          "name": "1.1 Create User API (Register)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"Password123!\",\n  \"phoneNumber\": \"+966500000000\",\n  \"country\": \"Saudi Arabia\",\n  \"gender\": \"female\",\n  \"birthday\": \"1995-06-15\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Registers a new user account (Accepts fullName, email, password, and profile fields)."
+          },
+          "response": []
+        },
+        {
+          "name": "1.2 User Login API",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.access_token) {",
+                  "    pm.collectionVariables.set('user_token', response.access_token);",
+                  "    console.log('User token saved to collection variable: user_token');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authenticates a standard user and saves the access_token in the collection variable {{user_token}}."
+          },
+          "response": []
+        },
+        {
+          "name": "1.3 Special Admin Login (Admin Credentials)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.access_token) {",
+                  "    pm.collectionVariables.set('admin_token', response.access_token);",
+                  "    console.log('Admin token saved to collection variable: admin_token');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@darsoft.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Special Admin Login using the pre-seeded admin credentials. Automatically saves access_token to {{admin_token}}."
+          },
+          "response": []
+        },
+        {
+          "name": "1.4 Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "profile"]
+            },
+            "description": "Retrieves the profile of the currently logged-in user."
+          },
+          "response": []
+        },
+        {
+          "name": "1.5 Update User Profile API",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Jane Updated Doe\",\n  \"phoneNumber\": \"+966599999999\",\n  \"country\": \"Jordan\",\n  \"gender\": \"female\",\n  \"birthday\": \"1996-01-20\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "profile"]
+            },
+            "description": "Updates profile fields: name, birthday, country, gender, and phone number."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Address Management",
+      "item": [
+        {
+          "name": "2.1 Create Address API",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.address && response.address._id) {",
+                  "    pm.collectionVariables.set('addressId', response.address._id);",
+                  "    console.log('Created addressId saved:', response.address._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Home\",\n  \"city\": \"Amman\",\n  \"street\": \"Queen Rania Street\",\n  \"locationDetails\": \"Building 10, 3rd Floor\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/addresses",
+              "host": ["{{baseUrl}}"],
+              "path": ["addresses"]
+            },
+            "description": "Creates a new address linked to the authenticated user (name, city, street, locationDetails)."
+          },
+          "response": []
+        },
+        {
+          "name": "2.2 List User Addresses API",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/addresses",
+              "host": ["{{baseUrl}}"],
+              "path": ["addresses"]
+            },
+            "description": "Retrieves all addresses associated with the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "2.3 Delete Address API (Ownership Enforced)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/addresses/{{addressId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["addresses", "{{addressId}}"]
+            },
+            "description": "Removes a specified address from the user's profile. Checks ownership."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Home Screen (Real-Time News - Bonus)",
+      "item": [
+        {
+          "name": "3.1 Real-Time News Feed API (Redis Cached)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/news",
+              "host": ["{{baseUrl}}"],
+              "path": ["news"]
+            },
+            "description": "Retrieves all news for the home screen. Cached using Redis."
+          },
+          "response": []
+        },
+        {
+          "name": "3.2 Get Single News by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["news", "{{newsId}}"]
+            },
+            "description": "Retrieves a single news article by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "3.3 News Management API: Create News (Admin Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.news && response.news._id) {",
+                  "    pm.collectionVariables.set('newsId', response.news._id);",
+                  "    console.log('Created newsId saved:', response.news._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Major Update 2.0 Released\",\n  \"description\": \"We are thrilled to announce new real-time features and enhanced performance!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/news",
+              "host": ["{{baseUrl}}"],
+              "path": ["news"]
+            },
+            "description": "Creates a new news item (Admin only). Broadcasts newsCreated event via WebSocket and invalidates Redis cache."
+          },
+          "response": []
+        },
+        {
+          "name": "3.4 News Management API: Update News (Admin Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Major Update 2.0 (Patch Applied)\",\n  \"description\": \"Updated patch notes with additional stability improvements.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["news", "{{newsId}}"]
+            },
+            "description": "Updates an existing news item (Admin only). Broadcasts newsUpdated event via WebSocket and invalidates Redis cache."
+          },
+          "response": []
+        },
+        {
+          "name": "3.5 News Management API: Delete News (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["news", "{{newsId}}"]
+            },
+            "description": "Deletes a news item (Admin only). Broadcasts newsDeleted event via WebSocket and invalidates Redis cache."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+export const ADDRESS_SERVICE = Symbol('ADDRESS_SERVICE');
+export const ADDRESS_REPOSITORY = Symbol('ADDRESS_REPOSITORY');
