@@ -186,25 +186,6 @@ As requested in the assignment guidelines, the application automatically seeds a
 
 ---
 
-## 📬 Postman Collection
-
-A fully configured, production-ready Postman collection is included in the root directory:
-📁 **[`Darsoft_API.postman_collection.json`](file:///c:/Users/moaiadabdulsalam/Desktop/Darsoft-task1/Darsoft_API.postman_collection.json)**
-
-### How to Import & Use:
-1. Open **Postman** and click **Import** (top left).
-2. Select the [`Darsoft_API.postman_collection.json`](file:///c:/Users/moaiadabdulsalam/Desktop/Darsoft-task1/Darsoft_API.postman_collection.json) file from this repository.
-3. The collection is organized into 3 folders matching the assignment specification:
-   - `1. User Management & Auth`: Register (Create User), Standard Login, Special Admin Login, Get Profile, Update Profile.
-   - `2. Address Management`: Create Address, List Addresses, Delete Address.
-   - `3. Home Screen (Real-Time News - Bonus)`: Real-Time News Feed (Redis Cached), Single News, Admin News CRUD.
-4. **Automated Token Management:**
-   - When you execute **User Login**, the `access_token` is automatically saved into the `{{user_token}}` variable.
-   - When you execute **Special Admin Login**, the `access_token` is automatically saved into the `{{admin_token}}` variable.
-   - Subsequent requests automatically use the corresponding token in the `Authorization: Bearer <token>` header.
-
----
-
 ## 📖 API Documentation & Endpoints
 
 ### Interactive Swagger UI
